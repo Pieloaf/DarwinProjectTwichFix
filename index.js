@@ -87,10 +87,10 @@
     let resBody = "";
     if (code && scope) {
       getTwitchTokens(code);
-      resBody =
-        "<script>alert('Success!\nNow open Darwin Project to finish the setup');" +
-        "window.location='https://www.twitch.tv/directory/category/darwin-project'</script>";
       httpServer.close();
+      resBody =
+        "<script>alert('Success! Now open Darwin Project to finish the setup');" +
+        "window.location='https://www.twitch.tv/directory/category/darwin-project'</script>";
     }
 
     res.writeHead(200);
@@ -173,16 +173,17 @@
   // modify profile to pass twitch tokens to game client
   const modifyProfile = async (res) => {
     let body = JSON.parse(res.body.buffer.toString());
-    let darwinStreamingInfo =
-      body.profile.playerStreamingInformation.streamingPlatformTokens;
 
     // ignore if no tokens or profile already connected to twitch
-    if (!twitchTokens || darwinStreamingInfo.length) {
+    if (
+      !twitchTokens ||
+      body.profile.playerStreamingInformation.streamingPlatformTokens.length
+    ) {
       return res;
     }
 
     // set twitch info
-    darwinStreamingInfo = [
+    body.profile.playerStreamingInformation.streamingPlatformTokens = [
       {
         accessToken: twitchTokens.access_token,
         refreshToken: twitchTokens.refresh_token,
