@@ -1,0 +1,15 @@
+{
+  "name": "darwin_fix_twitch_auth",
+  "version": "1.0.0",
+  "description": "Fix Twitch Authentication for Darwin Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mockttp": "^3.7.0",
+    "node-fetch": "^3.3.2"
+  }
+}
