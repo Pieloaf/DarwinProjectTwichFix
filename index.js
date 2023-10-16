@@ -54,15 +54,6 @@
     );
   };
 
-  // promisify run commands in powershell
-  const run = (cmd) => {
-    return new Promise((resolve, reject) => {
-      exec(cmd, { shell: "powershell.exe" }, (error, stdout, stderr) => {
-        resolve(error ? error : stdout ? stdout : stderr);
-      });
-    });
-  };
-
   // Load https cert
   const key = fsync.readFileSync(
     path.join(__dirname, "keys", "selfsigned.key")
@@ -109,14 +100,27 @@
   const startProxy = async () => {
     console.log("Starting Proxy...");
     await proxyServer.start();
-    await run(`netsh winhttp set proxy 127.0.0.1:${proxyServer.port}`);
-    console.log("Proxy Started");
+    exec(`netsh winhttp set proxy 127.0.0.1:${proxyServer.port}`, { shell: "powershell.exe" }, (err, stdout, stderr) => {
+      if (err||stderr) {
+        console.error("Error starting proxy:", err.message||stderr);
+        console.log("Note: This is most likely due to insufficient privileges to set a system wide proxy.");
+        console.log("      Run the script from an elevated command prompt.");
+        console.log("      Optionally, use the included batch file which will request an elevated prompt before running the script.\n");
+        process.exit(1);
+      }
+      console.log("Proxy Started");
+    });
   };
 
   const stopProxy = async () => {
     console.log("Stopping Proxy...");
-    await run("netsh winhttp reset proxy");
-    console.log("Proxy Reset");
+    exec("netsh winhttp reset proxy", { shell: "powershell.exe" }, (err, stdout, stderr) => {
+      if (err||stderr) {
+        console.error("Error stopping proxy: ", err.message||stderr);
+        process.exit(1);
+      }
+      console.log("Proxy Reset");
+    });
     proxyServer.stop();
     console.log("Proxy Server Stopped");
     process.exit(0);
