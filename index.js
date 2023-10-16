@@ -89,8 +89,8 @@
       getTwitchTokens(code);
       httpServer.close();
       resBody =
-        "<script>alert('Success! Now open Darwin Project to finish the setup');" +
-        "window.location='https://www.twitch.tv/directory/category/darwin-project'</script>";
+        "<script>alert('Success! Click OK to launch Darwin Project to finish the setup');" +
+        "window.location='steam://rungameid/544920'</script>";
     }
 
     res.writeHead(200);
@@ -111,7 +111,6 @@
     await proxyServer.start();
     await run(`netsh winhttp set proxy 127.0.0.1:${proxyServer.port}`);
     console.log("Proxy Started");
-    console.log("!!!! Open Darwin Project to finish setup !!!!");
   };
 
   const stopProxy = async () => {
